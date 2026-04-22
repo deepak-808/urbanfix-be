@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  api:
+    build: .
+    ports:
+      - '4000:4000'
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/urbanfix
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production}
+      JWT_EXPIRES_IN: 7d
+      PORT: 4000
+      FRONTEND_URL: http://localhost:3001
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:7
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
